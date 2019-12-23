@@ -2,6 +2,8 @@
 
 namespace Framework\Settings;
 
+use mysql_xdevapi\Exception;
+
 /**
  * Class GenericSettings
  * @package Framework\Settings
@@ -58,6 +60,24 @@ class GenericSettings implements GenericSettingsInterface
     public function set (string $name, $value): self
     {
         $this->setting[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * @param string $filename
+     * @return $this
+     * @throws \Exception
+     */
+    public function loadJsonFile (string $filename): self
+    {
+        $filename = realpath($filename);
+        if ($filename && file_exists($filename)) {
+            $this->setSettings(
+               (array) json_decode(file_get_contents($filename))
+            );
+        } else {
+            throw new \Exception( 'Could not find ' . $filename, '404');
+        }
         return $this;
     }
 

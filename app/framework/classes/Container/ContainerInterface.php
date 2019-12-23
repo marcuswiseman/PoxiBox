@@ -3,6 +3,7 @@
 namespace Framework\Container;
 
 use Framework\Router\GenericRouter;
+use Framework\Settings\GenericSettings;
 
 /**
  * Interface ContainerInterface
@@ -19,7 +20,7 @@ interface ContainerInterface
     /**
      * @return bool
      */
-    public function up (): bool;
+    public function start (): bool;
 
     /**
      * @return array|null
@@ -37,5 +38,16 @@ interface ContainerInterface
      * @return Container
      */
     public function addRouter (GenericRouter $router): Container;
+
+    /**
+     * @return GenericSettings
+     */
+    public function getSettings (): GenericSettings;
+
+    /**
+     * @param GenericSettings $settings
+     * @return Container
+     */
+    public function setSettings (GenericSettings $settings): Container;
 
 }

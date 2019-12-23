@@ -3,6 +3,7 @@
 namespace Framework\Container;
 
 use Framework\Router\GenericRouter;
+use Framework\Settings\GenericSettings;
 
 /**
  * Class Container
@@ -16,6 +17,11 @@ class Container implements ContainerInterface
     private $routers;
 
     /**
+     * @var GenericSettings
+     */
+    private $settings;
+
+    /**
      * Container constructor.
      * @param GenericRouter[] $routers
      */
@@ -25,9 +31,27 @@ class Container implements ContainerInterface
     }
 
     /**
+     * @return GenericSettings
+     */
+    public function getSettings (): GenericSettings
+    {
+        return !empty($this->settings) ? $this->settings : null;
+    }
+
+    /**
+     * @param GenericSettings $settings
+     * @return $this
+     */
+    public function setSettings (GenericSettings $settings): self
+    {
+        $this->settings = $settings;
+        return $this;
+    }
+
+    /**
      * @return bool
      */
-    public function up (): bool
+    public function start (): bool
     {
         $result = false;
         foreach ($this->getRouters() as $router) {

@@ -1,8 +1,5 @@
 <?php
 
-use Framework\Container\Container;
-use Framework\Settings\GenericSettings;
-
 define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 define('APPLICATION_PATH', __DIR__);
 

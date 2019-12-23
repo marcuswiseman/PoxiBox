@@ -39,4 +39,10 @@ interface GenericSettingsInterface
      */
     public function set (string $name, $value): GenericSettings;
 
+    /**
+     * @param string $filename
+     * @return GenericSettings
+     */
+    public function loadJsonFile (string $filename): GenericSettings;
+
 }
