@@ -2,6 +2,7 @@
 
 namespace Framework\Controller;
 
+use Framework\Logger\Logger;
 use Framework\Settings\GenericSettings;
 
 /**
@@ -100,17 +101,17 @@ class ControllerHandler
         $fullPath = realpath($fullPath);
 
         if (!$fullPath) {
-            // TODO - log here
+            (new Logger('Controller Handler', APPLICATION_LOGS . 'global.log'))->get()->info("{$parsedControllerName}Controller does not exist.", [$this->getPattern(), $this->getBaseFolder()]);
             return false;
         }
 
         if (!@include($fullPath)) {
-            // TODO - log here
+            (new Logger('Controller Handler', APPLICATION_LOGS . 'global.log'))->get()->info("{$parsedControllerName}Controller could not be included.", [$this->getPattern(), $this->getBaseFolder()]);
             return false;
         }
 
         if (!class_exists($parsedControllerName . 'Controller')) {
-            // TODO - log here
+            (new Logger('Controller Handler', APPLICATION_LOGS . 'global.log'))->get()->info("{$parsedControllerName}Controller has no go() function.", [$this->getPattern(), $this->getBaseFolder()]);
             return false;
         }
 

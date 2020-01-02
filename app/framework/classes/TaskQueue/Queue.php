@@ -3,6 +3,7 @@
 namespace Framework\TaskQueue;
 
 use Cake\Database\Exception;
+use Framework\Logger\Logger;
 
 /**
  * Class Queue
@@ -57,7 +58,7 @@ class Queue
                 $task->execute();
             } catch (Exception $e) {
                 $result = false;
-                // TODO - LOG ERROR HERE (non blocking)
+                (new Logger('Task Queue', APPLICATION_LOGS . 'global.log'))->get()->warning($e->getMessage(), $e->getTrace());
             }
         }
         return $result;
