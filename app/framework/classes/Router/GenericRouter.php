@@ -2,7 +2,9 @@
 
 namespace Framework\Router;
 
+use Exception;
 use Framework\Controller\ControllerHandler;
+use Framework\Logger\Logger;
 use Framework\Settings\GenericSettings;
 use Framework\TaskQueue\Queue;
 
@@ -12,6 +14,17 @@ use Framework\TaskQueue\Queue;
  */
 class GenericRouter implements GenericRouterInterface
 {
+
+    /**
+     * Controller :- a page that does things.
+     */
+    const MODE_CONTROLLER = 'controller';
+
+    /**
+     * Resources :- such as files.
+     */
+    const MODE_RESOURCE = 'resource';
+
     /**
      * @var GenericSettings
      */
@@ -89,6 +102,7 @@ class GenericRouter implements GenericRouterInterface
     public function setPattern (string $pattern): self
     {
         $this->pattern = trim($pattern, '/');
+        $this->pattern = str_replace('.php', '', $this->pattern);
         return $this;
     }
 
@@ -148,14 +162,25 @@ class GenericRouter implements GenericRouterInterface
     public function route (): bool
     {
         $taskQueueResult = $this->getTaskQueue()->execute();
+        $result          = false;
 
         if (!$taskQueueResult) {
             return false;
         }
 
-        $controllerResult = $this->getControllerHandler()->import();
+        $importType = $this->getSettings() ? null : 'importController';
+        if (!$importType) {
+            $importType = 'import' . ucfirst($this->getSettings()->get('mode'));
+        }
 
-        if (!$controllerResult) {
+        try {
+            $result = @call_user_func(array($this->getControllerHandler(), $importType));
+        } catch (Exception $e) {
+            (new Logger('Controller Handler', APPLICATION_LOGS . 'alerts.log'))->get()->alert("{$importType} is an invalid import type.");
+            return false;
+        }
+
+        if (!$result) {
             return false;
         }
 

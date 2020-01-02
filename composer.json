@@ -4,6 +4,7 @@
         "robmorgan/phinx": "^0.11.3",
         "monolog/monolog": "^2.0",
         "ext-json": "*",
+        "ext-fileinfo": "*",
         "vlucas/phpdotenv": "^4.1"
     },
     "autoload": {

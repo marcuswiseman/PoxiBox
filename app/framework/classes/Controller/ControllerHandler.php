@@ -42,6 +42,42 @@ class ControllerHandler
     }
 
     /**
+     * @return bool
+     */
+    public function importResource (): bool
+    {
+
+        $splitPattern = explode('/', $this->getPattern());
+
+        if ($this->getBaseFolder() == $splitPattern[0] && count($splitPattern) == 1) {
+            return false;
+        }
+
+        if ($splitPattern[0] != $this->getBaseFolder()) {
+            return false;
+        }
+
+        if ($this->getBaseFolder() == $splitPattern[0]) {
+            unset($splitPattern[0]);
+        }
+
+        $path     = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', '..', $this->getBaseFolder(), implode(DIRECTORY_SEPARATOR, $splitPattern)]);
+        $fullPath = realpath($path);
+
+        if (!$fullPath) {
+            (new Logger('Controller Handler', APPLICATION_LOGS . 'debug.log'))->get()->warning("Could not find resource.", [$path, $fullPath]);
+            return false;
+        }
+
+        $mime = mime_content_type($fullPath);
+        header('Content-type: ' . $mime);
+
+        echo file_get_contents($fullPath);
+
+        return true;
+    }
+
+    /**
      * @return string|null
      */
     public function getPattern (): ?string
@@ -60,44 +96,45 @@ class ControllerHandler
     }
 
     /**
-     * @return GenericSettings|null
+     * @return string|null
      */
-    public function getSettings (): ?GenericSettings
+    public function getBaseFolder (): ?string
     {
-        return $this->settings;
+        return isset($this->baseFolder) ? $this->baseFolder : null;
     }
 
     /**
-     * @param GenericSettings|null $settings
+     * @param string $baseFolder
      * @return $this
      */
-    public function setSettings (?GenericSettings $settings): self
+    public function setBaseFolder (string $baseFolder): self
     {
-        $this->settings = $settings;
+        $this->baseFolder = $baseFolder;
         return $this;
     }
 
     /**
      * @return bool
      */
-    public function import (): bool
+    public function importController (): bool
     {
-        $splitPattern = explode('/', $this->getPattern());
-        $parsedControllerName = $this->getParsedControllerFile($splitPattern[count($splitPattern)-1]);
+        $splitPattern         = explode('/', $this->getPattern());
+        $parsedControllerName = $this->getParsedControllerFile($splitPattern[count($splitPattern) - 1]);
+        unset($splitPattern[count($splitPattern) - 1]);
 
-        if ($this->getSettings() && $this->getSettings()->get('exact_match')){
+        if ($this->getSettings() && $this->getSettings()->get('exact_match')) {
             if ($splitPattern[0] != $this->getBaseFolder()) {
                 return false;
             }
         }
 
-        if ($splitPattern[0] == 'index.php' || ($this->getBaseFolder() == $splitPattern['0'] && count($splitPattern) == 1)) {
+        if ($splitPattern[0] == 'index.php' || ($this->getBaseFolder() == $splitPattern[0] && count($splitPattern) == 1)) {
             $parsedControllerName = 'Index';
         }
 
         $fullControllerName = $parsedControllerName . 'Controller';
-        $path = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', '..', $this->getBaseFolder(), $fullControllerName . '.php']);
-        $fullPath = realpath($path);
+        $path               = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', '..', $this->getBaseFolder(), implode(DIRECTORY_SEPARATOR, $splitPattern), $fullControllerName . '.php']);
+        $fullPath           = realpath($path);
 
         if (!$fullPath) {
             (new Logger('Controller Handler', APPLICATION_LOGS . 'debug.log'))->get()->warning("{$parsedControllerName}Controller does not exist.", [$path, $fullPath]);
@@ -137,20 +174,20 @@ class ControllerHandler
     }
 
     /**
-     * @return string|null
+     * @return GenericSettings|null
      */
-    public function getBaseFolder (): ?string
+    public function getSettings (): ?GenericSettings
     {
-        return isset($this->baseFolder) ? $this->baseFolder : null;
+        return $this->settings;
     }
 
     /**
-     * @param string $baseFolder
+     * @param GenericSettings|null $settings
      * @return $this
      */
-    public function setBaseFolder (string $baseFolder): self
+    public function setSettings (?GenericSettings $settings): self
     {
-        $this->baseFolder = $baseFolder;
+        $this->settings = $settings;
         return $this;
     }
 

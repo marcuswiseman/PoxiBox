@@ -4,3 +4,4 @@
 /app/.env
 .idea
 .DS_Store
+/app/logs/*
