@@ -96,21 +96,21 @@ class ControllerHandler
         }
 
         $fullControllerName = $parsedControllerName . 'Controller';
-        $fullPath = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', '..', $this->getBaseFolder(), $fullControllerName . '.php']);
-        $fullPath = realpath($fullPath);
+        $path = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', '..', $this->getBaseFolder(), $fullControllerName . '.php']);
+        $fullPath = realpath($path);
 
         if (!$fullPath) {
-            (new Logger('Controller Handler', APPLICATION_LOGS . 'global.log'))->get()->info("{$parsedControllerName}Controller does not exist.", [$this->getPattern(), $this->getBaseFolder()]);
+            (new Logger('Controller Handler', APPLICATION_LOGS . 'debug.log'))->get()->warning("{$parsedControllerName}Controller does not exist.", [$path, $fullPath]);
             return false;
         }
 
         if (!@include($fullPath)) {
-            (new Logger('Controller Handler', APPLICATION_LOGS . 'global.log'))->get()->info("{$parsedControllerName}Controller could not be included.", [$this->getPattern(), $this->getBaseFolder()]);
+            (new Logger('Controller Handler', APPLICATION_LOGS . 'debug.log'))->get()->warning("{$parsedControllerName}Controller could not be included.", [$path, $fullPath]);
             return false;
         }
 
         if (!class_exists($parsedControllerName . 'Controller')) {
-            (new Logger('Controller Handler', APPLICATION_LOGS . 'global.log'))->get()->info("{$parsedControllerName}Controller has no go() function.", [$this->getPattern(), $this->getBaseFolder()]);
+            (new Logger('Controller Handler', APPLICATION_LOGS . 'debug.log'))->get()->warning("{$parsedControllerName}Controller has no go() function.", [$path, $fullPath]);
             return false;
         }
 

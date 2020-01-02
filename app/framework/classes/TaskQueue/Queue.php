@@ -58,7 +58,7 @@ class Queue
                 $task->execute();
             } catch (Exception $e) {
                 $result = false;
-                (new Logger('Task Queue', APPLICATION_LOGS . 'global.log'))->get()->warning($e->getMessage(), $e->getTrace());
+                (new Logger('Task Queue', APPLICATION_LOGS . 'warnings.log'))->get()->warning($e->getMessage(), $e->getTrace());
             }
         }
         return $result;

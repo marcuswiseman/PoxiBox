@@ -28,7 +28,7 @@ try {
         'SITE_URL'
     ]);
 } catch (ValidationException $e) {
-    return (new Logger('Database', APPLICATION_LOGS . 'global.log'))->get()->alert($e->getMessage(), $e->getTrace());
+    return (new Logger('Database', APPLICATION_LOGS . 'alerts.log'))->get()->alert($e->getMessage(), $e->getTrace());
 }
 
 // ENABLE DEBUG
