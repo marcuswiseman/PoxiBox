@@ -82,7 +82,6 @@ class ControllerHandler
      */
     public function import (): bool
     {
-
         $splitPattern = explode('/', $this->getPattern());
         $parsedControllerName = $this->getParsedControllerFile($splitPattern[count($splitPattern)-1]);
 
