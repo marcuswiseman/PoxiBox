@@ -41,9 +41,9 @@ class GenericRouter implements GenericRouterInterface
      * GenericRouter constructor.
      * @param string|null $destination
      * @param string $pattern
-     * @param GenericSettings $settings
+     * @param GenericSettings|null $settings
      */
-    public function __construct (?string $destination, string $pattern, GenericSettings $settings)
+    public function __construct (?string $destination, string $pattern, ?GenericSettings $settings = null)
     {
         $this->setPattern($pattern);
         $this->setSettings($settings);
@@ -125,18 +125,18 @@ class GenericRouter implements GenericRouterInterface
     }
 
     /**
-     * @return GenericSettings
+     * @return GenericSettings|null
      */
-    public function getSettings (): GenericSettings
+    public function getSettings (): ?GenericSettings
     {
         return $this->settings;
     }
 
     /**
-     * @param GenericSettings $settings
+     * @param GenericSettings|null $settings
      * @return $this
      */
-    public function setSettings (GenericSettings $settings): self
+    public function setSettings (?GenericSettings $settings): self
     {
         $this->settings = $settings;
         return $this;

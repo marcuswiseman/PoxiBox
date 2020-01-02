@@ -31,9 +31,9 @@ class ControllerHandler
      * ControllerHandler constructor.
      * @param string|null $baseFolder
      * @param string $pattern
-     * @param GenericSettings $settings
+     * @param GenericSettings|null $settings
      */
-    public function __construct (?string $baseFolder, string $pattern, GenericSettings $settings)
+    public function __construct (?string $baseFolder, string $pattern, ?GenericSettings $settings = null)
     {
         $this->setBaseFolder($baseFolder);
         $this->setSettings($settings);
@@ -59,18 +59,18 @@ class ControllerHandler
     }
 
     /**
-     * @return GenericSettings
+     * @return GenericSettings|null
      */
-    public function getSettings (): GenericSettings
+    public function getSettings (): ?GenericSettings
     {
         return $this->settings;
     }
 
     /**
-     * @param GenericSettings $settings
+     * @param GenericSettings|null $settings
      * @return $this
      */
-    public function setSettings (GenericSettings $settings): self
+    public function setSettings (?GenericSettings $settings): self
     {
         $this->settings = $settings;
         return $this;
@@ -85,7 +85,7 @@ class ControllerHandler
         $splitPattern = explode('/', $this->getPattern());
         $parsedControllerName = $this->getParsedControllerFile($splitPattern[count($splitPattern)-1]);
 
-        if ($this->getSettings()->get('exact_match')){
+        if ($this->getSettings() && $this->getSettings()->get('exact_match')){
             if ($splitPattern[0] != $this->getBaseFolder()) {
                 return false;
             }

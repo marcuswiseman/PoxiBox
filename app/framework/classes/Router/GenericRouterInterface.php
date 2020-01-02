@@ -16,9 +16,9 @@ interface GenericRouterInterface
      * GenericRouterInterface constructor.
      * @param string|null $destination
      * @param string $pattern
-     * @param GenericSettings $settings
+     * @param GenericSettings|null $settings
      */
-    public function __construct (?string $destination, string $pattern, GenericSettings $settings);
+    public function __construct (?string $destination, string $pattern, ?GenericSettings $settings = null);
 
     /**
      * @return bool
@@ -31,10 +31,10 @@ interface GenericRouterInterface
     public function getSettings (): ?GenericSettings;
 
     /**
-     * @param GenericSettings $settings
+     * @param GenericSettings|null $settings
      * @return GenericRouter
      */
-    public function setSettings (GenericSettings $settings): GenericRouter;
+    public function setSettings (?GenericSettings $settings): GenericRouter;
 
     /**
      * @return Queue|null
