@@ -2,6 +2,7 @@
 
 namespace Framework\Container;
 
+use Framework\Logger\Logger;
 use Framework\Router\GenericRouter;
 use Framework\Settings\GenericSettings;
 
@@ -56,6 +57,7 @@ class Container implements ContainerInterface
         $result = false;
         foreach ($this->getRouters() as $router) {
             $result = $router->route();
+            (new Logger('Controller Handler', APPLICATION_LOGS . 'debug.log'))->get()->alert("Result: " . ($result ? 'OK' : 'BAD'), [$router->getDestination(), $router->getPattern()]);
             if ($result == true) {
                 break;
             }

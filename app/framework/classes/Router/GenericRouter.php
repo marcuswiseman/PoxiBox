@@ -168,9 +168,11 @@ class GenericRouter implements GenericRouterInterface
             return false;
         }
 
-        $importType = $this->getSettings() ? null : 'importController';
-        if (!$importType) {
+
+        $importType = 'importController';
+        if ($this->getSettings() && $this->getSettings()->get('mode')) {
             $importType = 'import' . ucfirst($this->getSettings()->get('mode'));
+
         }
 
         try {

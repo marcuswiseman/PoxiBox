@@ -118,18 +118,25 @@ class ControllerHandler
      */
     public function importController (): bool
     {
-        $splitPattern         = explode('/', $this->getPattern());
-        $parsedControllerName = $this->getParsedControllerFile($splitPattern[count($splitPattern) - 1]);
-        unset($splitPattern[count($splitPattern) - 1]);
+        $splitPattern = explode('/', $this->getPattern());
 
-        if ($this->getSettings() && $this->getSettings()->get('exact_match')) {
+        if ($this->getSettings() && $this->getSettings()->get('exact_match') == true) {
             if ($splitPattern[0] != $this->getBaseFolder()) {
                 return false;
             }
+            unset($splitPattern[0]);
+            $splitPattern = array_values($splitPattern);
         }
 
-        if ($splitPattern[0] == 'index.php' || ($this->getBaseFolder() == $splitPattern[0] && count($splitPattern) == 1)) {
-            $parsedControllerName = 'Index';
+        $parsedControllerName = 'Index';
+        if (count($splitPattern) > 0) {
+            $parsedControllerName = $this->getParsedControllerFile($splitPattern[count($splitPattern) - 1]);
+            unset($splitPattern[count($splitPattern) - 1]);
+            $splitPattern = array_values($splitPattern);
+        }
+
+        if ($this->getPattern() == 'index') {
+            $splitPattern = '';
         }
 
         $fullControllerName = $parsedControllerName . 'Controller';
@@ -160,6 +167,24 @@ class ControllerHandler
     }
 
     /**
+     * @return GenericSettings|null
+     */
+    public function getSettings (): ?GenericSettings
+    {
+        return isset($this->settings) ? $this->settings : null;
+    }
+
+    /**
+     * @param GenericSettings|null $settings
+     * @return $this
+     */
+    public function setSettings (?GenericSettings $settings): self
+    {
+        $this->settings = $settings;
+        return $this;
+    }
+
+    /**
      * @param string $filename
      * @return string|null
      */
@@ -171,24 +196,6 @@ class ControllerHandler
             $splitControllerFile[$index] = ucfirst($value);
         }
         return implode($splitControllerFile, '');
-    }
-
-    /**
-     * @return GenericSettings|null
-     */
-    public function getSettings (): ?GenericSettings
-    {
-        return $this->settings;
-    }
-
-    /**
-     * @param GenericSettings|null $settings
-     * @return $this
-     */
-    public function setSettings (?GenericSettings $settings): self
-    {
-        $this->settings = $settings;
-        return $this;
     }
 
 }

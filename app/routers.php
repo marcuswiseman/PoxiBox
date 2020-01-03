@@ -6,6 +6,7 @@ use Framework\Settings\GenericSettings;
 
 $app = new Container([
     new GenericRouter('assets', $_GET['route'], new GenericSettings(['mode' => GenericRouter::MODE_RESOURCE])),
+    new GenericRouter('admin', $_GET['route'], new GenericSettings(['exact_match' => true])),
     new GenericRouter('controllers', $_GET['route']),
 ]);
 

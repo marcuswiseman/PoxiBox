@@ -4,6 +4,10 @@ use Dotenv\Dotenv;
 use Dotenv\Exception\ValidationException;
 use Framework\Logger\Logger;
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 define('APPLICATION_LOGS', __DIR__ . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR);
 define('APPLICATION_PATH', __DIR__ . DIRECTORY_SEPARATOR);
@@ -16,7 +20,7 @@ $dotEnv = Dotenv::createImmutable(APPLICATION_PATH);
 $dotEnv->load();
 
 if (!file_exists(APPLICATION_LOGS)) {
-    mkdir(APPLICATION_LOGS, 655);
+    mkdir(APPLICATION_LOGS, 755);
 }
 
 try {
