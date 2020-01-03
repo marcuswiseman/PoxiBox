@@ -15,10 +15,6 @@ include_once APPLICATION_PATH . '/../vendor/autoload.php';
 $dotEnv = Dotenv::createImmutable(APPLICATION_PATH);
 $dotEnv->load();
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 if (!file_exists(APPLICATION_LOGS)) {
     mkdir(APPLICATION_LOGS, 655);
 }
@@ -32,7 +28,9 @@ try {
         'SITE_URL'
     ]);
 } catch (ValidationException $e) {
-    return (new Logger('Database', APPLICATION_LOGS . 'alerts.log'))->get()->alert($e->getMessage(), $e->getTrace());
+    (new Logger('Database', APPLICATION_LOGS . 'alerts.log'))->get()->alert($e->getMessage(), $e->getTrace());
+    http_response_code(500);
+    exit;
 }
 
 // ENABLE DEBUG
